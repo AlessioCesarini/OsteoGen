@@ -120,3 +120,27 @@ ANIMALI ANTICHI
 Celacanto — pesce "fossile vivente", pinne lobate (anello di congiunzione pesce-tetrapodi, scientificamente rilevantissimo per un progetto che tocca l'evoluzione)
 Tuatara — rettile neozelandese, unico sopravvissuto di un intero ordine (Rhynchocephalia) separato da lucertole/serpenti da 200+ milioni di anni
 Opossum della Virginia — marsupiale antico, utile contrasto con canguro
+
+
+
+DOVE REPERIRE LE IMMAGINI 
+
+Devo essere onesto: non esiste un sito che ti dà già pronte le coppie scheletro-animale nella forma in cui ti servono (stessa posa, stesso allineamento, pronte per il training). È un po' quello che temevo fin dall'inizio — questo tipo di dataset "già impacchettato" per il tuo task specifico semplicemente non esiste, perché è un problema di ricerca abbastanza di nicchia. Le uniche cose che ho trovato ora sono foto stock generiche (Getty, iStock, Freepik) e board Pinterest — inutili per un dataset serio, sia per qualità/coerenza sia per questioni di licenza.
+
+Le fonti migliori che esistono davvero, anche se richiedono comunque un po' di lavoro tuo
+
+Per gli scheletri (qualità alta, licenze aperte)
+
+Smithsonian Open Access (openaccess.si.edu) — collezioni museali digitalizzate, molte foto di scheletri montati, licenza libera
+Biodiversity Heritage Library (biodiversitylibrary.org) — libri scientifici storici di anatomia comparata digitalizzati, contengono tavole di scheletri disegnate con grande precisione (spesso più pulite di una foto)
+Wikimedia Commons, categoria "Animal skeletons" — crowdsourced ma con tante foto museali, licenza chiara indicata per ognuna
+
+Per l'aspetto "vivo" corrispondente
+
+Wikimedia Commons di nuovo, foto naturalistiche della specie
+iNaturalist (inaturalist.org) — enorme archivio di foto naturalistiche geolocalizzate, con licenze Creative Commons filtrate
+La verità sul lavoro che ti aspetta
+
+Nessuna di queste fonti ti darà la coppia "già allineata nella stessa posa" — quello lo dovrai fare tu, immagine per immagine: prendi lo scheletro da una fonte, l'aspetto da un'altra, e li adatti/tagli/ruoti finché non sono ragionevolmente coerenti come inquadratura. È esattamente il lavoro "da scervellarsi" che volevi evitare, ma non c'è scorciatoia reale — è la natura stessa di costruire un dataset ad-hoc per un task che nessuno ha mai affrontato prima in questo modo specifico.
+
+Un'alternativa che ti taglierebbe drasticamente il lavoro, se vuoi valutarla: invece di foto reali per l'aspetto (B), potresti usare illustrazioni scientifiche standardizzate (es. da field guide/atlanti zoologici) — spesso hanno già pose laterali standard coerenti tra specie diverse, il che risolve gran parte del problema di allineamento. Il compromesso è che il tuo modello imparerebbe uno "stile illustrativo" invece che fotorealismo, ma per un esame è assolutamente difendibile e ti fa risparmiare settimane.
