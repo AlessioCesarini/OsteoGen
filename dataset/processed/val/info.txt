@@ -1,0 +1,5 @@
+Durante l'allenamento (es. ogni epoca), calcoli le metriche/loss anche su questo set — ma senza mai aggiornare i pesi con questi dati. Serve a:
+
+capire se il modello sta davvero generalizzando o sta iniziando a overfittare (tipico segnale: loss di train continua a scendere, loss di val inizia a risalire — è il momento in cui il modello sta "memorizzando" invece di "imparare")
+decidere quando fermare il training (early stopping)
+confrontare configurazioni diverse (es. λ diverso nella loss, learning rate diverso) e scegliere la migliore, senza aver mai toccato il test set
