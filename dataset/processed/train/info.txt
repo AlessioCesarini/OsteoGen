@@ -1,1 +1,0 @@
-Qui il generatore e il discriminatore vedono le coppie (A, B) e aggiornano i pesi tramite backpropagation, come abbiamo discusso. Questa è la parte più grande del dataset (nel tuo caso, l'80% circa).
