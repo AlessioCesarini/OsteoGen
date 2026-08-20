@@ -77,13 +77,13 @@ UCCELLI — Volatori (forte gruppo, ponte teropodi)
 [FATTO]Aquila — rapace, artigli robusti
 [FATTO]Piccione/Colomba — uccello "generico" di riferimento
 [FATTO]Pappagallo — becco ricurvo massiccio
-Colibrì — scheletro minuscolo, sterno enorme (carena)
-Airone/Cicogna — collo e zampe lunghissime
-Rondine — ali affusolate, corpo aerodinamico
-Gufo — cranio con grandi orbite, collo flessibile
-Balaeniceps rex (Becco a scarpa/Shoebill) — becco massiccio uncinato, postura rigida, forte somiglianza morfologica con piccoli teropodi
-Pellicano
-fagiani
+[FATTO]Colibrì — scheletro minuscolo, sterno enorme (carena)
+[FATTO]Airone/Cicogna — collo e zampe lunghissime
+[FATTO]Rondine — ali affusolate, corpo aerodinamico
+[FATTO]Gufo — cranio con grandi orbite, collo flessibile
+[FATTO] (Becco a scarpa/Shoebill) — becco massiccio uncinato, postura rigida, forte somiglianza morfologica con piccoli teropodi
+[FATTO]Pellicano
+[FATTO]fagiani
 
 UCCELLI — Non volatori / ancestrali (chiave per collegamento dinosauri)
 Gallina — riferimento diretto teropode, da citare esplicitamente in relazione
