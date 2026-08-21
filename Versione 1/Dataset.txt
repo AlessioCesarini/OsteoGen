@@ -86,50 +86,49 @@ UCCELLI — Volatori (forte gruppo, ponte teropodi)
 [FATTO]fagiani
 
 UCCELLI — Non volatori / ancestrali (chiave per collegamento dinosauri)
-Gallina — riferimento diretto teropode, da citare esplicitamente in relazione
-Tacchino — simile ma taglia/proporzioni diverse
-Struzzo — bipede corridore gigante, arti posteriori potenti
-Casuario — cresta ossea (casco), aspetto molto "dinosauro"
-Pinguino — ali trasformate in pinne rigide, ossa dense (non cave)
-Kiwi — corpo tozzo, becco lungo, quasi assenza ali
-Picchio — cranio rinforzato specificamente per l'impatto ripetuto, becco a scalpello
+[FATTO]Gallina — riferimento diretto teropode, da citare esplicitamente in relazione
+[FATTO]Tacchino — simile ma taglia/proporzioni diverse
+[FATTO]Struzzo — bipede corridore gigante, arti posteriori potenti
+[FATTO]Casuario — cresta ossea (casco), aspetto molto "dinosauro"
+[FATTO]Pinguino — ali trasformate in pinne rigide, ossa dense (non cave)
+[FATTO]Kiwi — corpo tozzo, becco lungo, quasi assenza ali
+[FATTO]Picchio — cranio rinforzato specificamente per l'impatto ripetuto, becco a scalpello
 
 RETTILI
-Coccodrillo — quadrupede corazzato, cranio allungato
-Tartaruga — guscio (carapace) fuso alla colonna
-Serpente — assenza totale di arti, colonna con centinaia di vertebre
-Iguana/Lucertola — quadrupede standard rettile
-Varano (tipo drago di Komodo) — rettile grande, robusto
-Camaleonte — arti a pinza, coda prensile
-Drago di Commodo
+[FATTO] Coccodrillo — quadrupede corazzato, cranio allungato
+[FATTO]Tartaruga — guscio (carapace) fuso alla colonna
+[FATTO]Serpente — assenza totale di arti, colonna con centinaia di vertebre
+[FATTO]Iguana/Lucertola — quadrupede standard rettile
+[FATTO]Varano (tipo drago di Komodo) — rettile grande, robusto
+[FATTO]Camaleonte — arti a pinza, coda prensile
+
 
 ANFIBI
-Rana — arti posteriori enormi per il salto, assenza coda
-Salamandra — quadrupede primitivo, coda presente
+[FATTO]Rana — arti posteriori enormi per il salto, assenza coda
+[FATTO]Salamandra — quadrupede primitivo, coda presente
+[FATTO]Oxylot
 
 PESCI
-Trota/Pesce osseo generico — scheletro osseo standard, pinne
-Squalo — scheletro cartilagineo (diverso da tutti gli altri)
-Razza — corpo appiattito, pinne pettorali enormi
+[FATTO]Trota/Pesce osseo generico — scheletro osseo standard, pinne
+[FATTO]Squalo — scheletro cartilagineo (diverso da tutti gli altri)
+[FATTO]Razza — corpo appiattito, pinne pettorali enormi
 
 ESTINTI (con raffigurazione nota, no dinosauri)
-Dodo — uccello non volatore estinto, il tuo esempio guida
-Alca impenne (Great Auk) — uccello marino non volatore estinto
-Tigre della Tasmania (Thylacine) — marsupiale carnivoro, convergenza con canidi
-Mammut lanoso — proporzioni simili a elefante ma zanne diverse
-Rinoceronte Lanoso
+[FATTO]odo — uccello non volatore estinto, il tuo esempio guida
+[FATTO]Alca impenne (Great Auk) — uccello marino non volatore estinto
+[FATTO]Tigre della Tasmania (Thylacine) — marsupiale carnivoro, convergenza con canidi
+[FATTO]Mammut lanoso — proporzioni simili a elefante ma zanne diverse
+[FATTO]Rinoceronte Lanoso
 
 MONOTREMI (mammiferi primitivi che depongono uova)
-49. Ornitorinco — becco osseo appiattito, zampe palmate, morfologia unica
-50. Echidna — corpo con aculei, becco tubolare, altro monotrema per contrasto
-
-
+[FATTO]49. Ornitorinco — becco osseo appiattito, zampe palmate, morfologia unica
+[FATTO]50. Echidna — corpo con aculei, becco tubolare, altro monotrema per contrasto
 
 ANIMALI ANTICHI
 
-Celacanto — pesce "fossile vivente", pinne lobate (anello di congiunzione pesce-tetrapodi, scientificamente rilevantissimo per un progetto che tocca l'evoluzione)
-Tuatara — rettile neozelandese, unico sopravvissuto di un intero ordine (Rhynchocephalia) separato da lucertole/serpenti da 200+ milioni di anni
-Opossum della Virginia — marsupiale antico, utile contrasto con canguro
+[FATTO]Celacanto — pesce "fossile vivente", pinne lobate (anello di congiunzione pesce-tetrapodi, scientificamente rilevantissimo per un progetto che tocca l'evoluzione)
+[FATTO]Tuatara — rettile neozelandese, unico sopravvissuto di un intero ordine (Rhynchocephalia) separato da lucertole/serpenti da 200+ milioni di anni
+[FATTO]Opossum della Virginia — marsupiale antico, utile contrasto con canguro
 
 
 
