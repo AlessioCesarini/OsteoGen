@@ -1,0 +1,3 @@
+separato, out-of-distribution, solo A (nessun B reale)
+
+Ovvero gli scheletri in input per il test finale
