@@ -1,0 +1,45 @@
+Capitolo Z: Architettura della Baseline - Analisi Topologica della Simple U-Net
+
+Z.1 Introduzione all'Architettura
+Per dimostrare i limiti spaziali delle Convolutional Neural Networks (CNN) standard in presenza di dataset disallineati, è stata implementata una topologia Image-to-Image basata su architettura U-Net. La rete (SimpleUNet) è istanziata come sottoclasse di `torch.nn.Module`. L'architettura è simmetrica e si divide in tre macro-sezioni: l'Encoder (contrazione spaziale), il Bottleneck (spazio latente semantico) e il Decoder (espansione e ricostruzione).
+
+---
+
+Z.2 L'Encoder (Discesa e Astrazione Semantica)
+Il compito dell'Encoder è distruggere progressivamente la risoluzione spaziale dell'immagine in input per estrarne feature sempre più astratte e concettuali (Feature di Alto Livello).
+L'estrazione avviene tramite blocchi convoluzionali consecutivi, alternati a strati di Pooling:
+
+* I blocchi convoluzionali (`self.enc1`, `self.enc2`, `self.enc3`): 
+  Ad ogni step di discesa, il numero di canali tensoriali viene raddoppiato (es. 64 -> 128 -> 256). Matematicamente, questo significa scambiare informazioni spaziali con profondità semantica. I canali iniziali catturano bordi e gradienti locali, mentre i canali successivi si specializzano nel riconoscimento di macro-strutture biologiche complesse (es. curvature ossee o proporzioni degli arti).
+* Sottocampionamento Massimo (`self.pool = nn.MaxPool2d(2)`): 
+  Applicato al termine di ogni blocco convoluzionale, il Max Pooling opera con una finestra 2x2. Estraendo il valore massimo e scartando gli altri tre, il tensore viene dimezzato in altezza e larghezza. 
+  Questa operazione garantisce due risultati teorici cruciali:
+  1. Amplia il *Receptive Field* globale, permettendo ai layer più profondi di elaborare l'intero scheletro anziché un singolo dettaglio.
+  2. Fornisce alla rete invarianza alle piccole traslazioni spaziali, mitigando parzialmente l'impatto del disallineamento osso-muscolo presente nel dataset.
+
+---
+
+Z.3 Il Bottleneck (Spazio Latente)
+Definito da `self.bottleneck = self.conv_block(256, 512)`, questo blocco rappresenta il fondo della struttura a 'U'. 
+È il punto di massima compressione spaziale e massima espansione semantica (512 canali). Il tensore in questo stato ha perso totalmente le coordinate spaziali precise dell'immagine originale: non è più una fotografia, ma una densa matrice di attributi latenti che riassume l'identità morfologica e strutturale dell'animale.
+
+---
+
+Z.4 Il Decoder (Risalita e Ricostruzione)
+Il Decoder ha il compito inverso: prendere le astrazioni dal Bottleneck e proiettarle nuovamente nello spazio ad alta risoluzione (512x512), dipingendo i tessuti molli (muscoli e pelle) sull'impalcatura ossea suggerita dall'input.
+Per evitare il collasso visivo, ogni step di risalita si affida all'azione sinergica di due componenti:
+
+* Espansione Spaziale (`nn.ConvTranspose2d`): 
+  Layer come `self.upconv3` hanno l'esclusivo compito geometrico di ingrandire il tensore. Utilizzando `kernel_size=2` e `stride=2`, la Transposed Convolution esegue una mappatura dove un singolo pixel in input viene proiettato in una griglia 2x2 non sovrapposta, raddoppiando esattamente la risoluzione spaziale e dimezzando i canali (da 512 a 256).
+* Miscelazione Semantica e Skip Connections (`self.dec3`): 
+  Subito dopo l'ingrandimento, il nuovo tensore è spazialmente esteso ma privo di dettagli netti (poiché deriva dai layer profondi sfocati). Tramite operazione matematica di concatenazione lungo l'asse dei canali (`torch.cat`), il tensore viene unito al tensore ad alta risoluzione salvato dall'Encoder al medesimo livello (Skip Connection). 
+  Il blocco `self.dec3` (che riceve 512 canali totali concatenati) esegue una miscelazione convoluzionale: utilizza le astrazioni profonde per dipingere le texture fenotipiche e le Skip Connections geometriche come "ricalco" spaziale per confinarle all'interno della struttura ossea corretta.
+
+---
+
+Z.5 L'Output Layer e la Normalizzazione 
+La rete restituisce un'immagine interpretabile attraverso due strati finali:
+* Compressione RGB (`self.final_conv = nn.Conv2d(64, 3, kernel_size=1)`): 
+  Una Pointwise Convolution (1x1) che comprime le ultime 64 feature map estraendo una somma pesata, riducendo la profondità a soli 3 canali, corrispondenti allo spettro colore (Rosso, Verde, Blu).
+* Allineamento del Dominio (`self.tanh = nn.Tanh()`): 
+  Durante la fase di Data Engineering, le immagini target sono state normalizzate nel range continuo [-1.0, 1.0]. L'applicazione della funzione di attivazione Tangente Iperbolica vincola rigorosamente l'output generato dalla rete nel medesimo range. Questa coerenza matematica è imperativa affinché il calcolo della Loss Pixel-wise (L1 Loss) avvenga tra domini numerici identici, prevenendo divergenze nei gradienti durante la Backpropagation.
