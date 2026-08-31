@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 
-SRC_DIR = Path("imgs")
+SRC_DIR = Path("imgs_to_work")
 RAW_X = Path("data/raw/input_x")
 RAW_Y = Path("data/raw/target_y")
 
