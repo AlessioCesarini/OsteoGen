@@ -8,17 +8,20 @@ from albumentations.pytorch import ToTensorV2
 class OsteoDataset(Dataset):
     def __init__(self, data_dir: str = "data/processed", transform=None):
         self.data_dir = Path(data_dir)
-        self.x_dir = self.data_dir / "input_x"
+        self.x_dir = self.data_dir / "input_x" 
         self.y_dir = self.data_dir / "target_y"
-        
+        # 1. Stampa il percorso reale in cui Python sta curiosando
+        print(f"DEBUG - Percorso assoluto: {self.x_dir.resolve()}")
         self.filenames = sorted([f.name for f in self.x_dir.glob("*.png")])
+        # 2. Conferma quanti file vengono effettivamente visti
+        print(f"DEBUG - File estratti: {len(self.filenames)}")
         self.transform = transform or self.get_default_transforms()
 
     def get_default_transforms(self):
         # Data Augmentation stocastica applicata sincronizzata (Y.2.4)
         return A.Compose([
             A.HorizontalFlip(p=0.5),
-            A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.05, rotate_limit=10, p=0.5, border_mode=cv2.BORDER_CONSTANT, value=0),
+            A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.05, rotate_limit=10, p=0.5, border_mode=cv2.BORDER_CONSTANT, fill=0),
             A.ElasticTransform(alpha=1, sigma=50, alpha_affine=50, p=0.3, border_mode=cv2.BORDER_CONSTANT, value=0),
             A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)), # Scalato tra [-1, 1] per modelli generativi
             ToTensorV2()
