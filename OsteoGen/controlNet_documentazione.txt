@@ -1,0 +1,30 @@
+Il DNA di Stable Diffusion (Text-to-Image)
+
+Il modello base (Stable Diffusion 1.5) non è nato originariamente per fare Image-to-Image, ma per trasformare descrizioni testuali in pixel.
+
+L'intera U-Net pre-addestrata è disseminata di layer di Cross-Attention. Questi strati matematici funzionano come serrature che si aspettano rigorosamente una specifica chiave in ingresso: un tensore testuale generato da un Transformer (CLIP).
+
+Se noi strappassimo via i Transformer dall'architettura e non fornissimo alcuna stringa testuale, i layer di Cross-Attention rimarrebbero vuoti. La moltiplicazione delle matrici sulla tua RTX 5080 andrebbe in crash istantaneo, bloccando l'intero addestramento.
+
+La Divisione del Lavoro
+
+ControlNet (Immagine): Elabora lo scheletro in pixel e inietta informazioni spaziali e geometriche direttamente nei blocchi della U-Net (es. "metti una zampa qui, metti una coda in queste coordinate").
+
+Transformer CLIP (Testo): Elabora il testo e fornisce informazioni semantiche e di stile (es. "disegna scaglie ruvide" o "disegna pelo scuro").
+
+Il Trucco della "Stringa Vuota"
+Poiché il tuo Ablation Study vuole dimostrare che la rete riesce a ricostruire il fenotipo basandosi esclusivamente sull'immagine delle ossa (senza "barare" suggerendole la specie esatta), noi applicheremo l'unconditional prompting.
+Passeremo ai Transformer una semplice stringa vuota: prompt = "".
+I Transformer tokenizeranno il nulla, generando un tensore neutro. Questo "fantasma matematico" soddisfa il requisito strutturale della U-Net, permettendo all'architettura di funzionare senza errori, ma costringe l'algoritmo ad affidarsi al 100% all'immagine dello scheletro elaborata da ControlNet.
+
+In una fase successiva del progetto, potrai sfruttare appieno quei Transformer: passando lo scheletro a ControlNet e la stringa testuale "fotografia fotorealistica di un T-Rex" al CLIP, fonderai il controllo geometrico assoluto dell'immagine con l'iniezione semantica del testo per un risultato impeccabile.
+
+Ecco i motivi esatti per cui siamo costretti a mantenerli come impalcatura:
+
+L'Equazione Incompleta (Cross-Attention): La U-Net di Stable Diffusion è disseminata di strati di attenzione. La matematica di questi strati esige due input contemporanei: i tensori visivi e i tensori testuali. Se rimuovessimo il modello CLIP, mancherebbe letteralmente metà dell'equazione. La tua RTX 5080 cercherebbe di moltiplicare una matrice per il nulla, causando un crash istantaneo per incompatibilità dimensionale (Shape Mismatch).
+
+Il Rischio "Lobotomia": Tecnicamente potresti riscrivere il codice per estirpare chirurgicamente i layer di Cross-Attention dalla U-Net. Il problema è che alterando la struttura originale invalideresti tutti i pesi matematici scaricati da Hugging Face. La rete verrebbe resettata a zero: dimenticherebbe istantaneamente cos'è una squama, un muscolo o una piuma. Dovresti riaddestrarla da capo su milioni di immagini, un'impresa impossibile con il tuo dataset da 65 scheletri.
+
+Il Manichino Matematico: Passare una stringa vuota al Transformer è un puro trucco informatico. Il CLIP genera un tensore "neutro" che funge da tappo. Riempiendo quel buco nell'equazione, la U-Net riceve esattamente la matrice che si aspetta per poter funzionare e conserva intatta tutta la sua immensa conoscenza fenotipica, ma non avendo alcun input semantico testuale, è costretta ad obbedire esclusivamente ai comandi spaziali del tuo ControlNet.
+
+In pratica, li teniamo accesi i
