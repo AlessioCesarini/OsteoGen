@@ -2,30 +2,36 @@ import cv2
 import torch
 from pathlib import Path
 from torch.utils.data import Dataset, DataLoader
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
+from torchvision.transforms import v2
 
 class OsteoDataset(Dataset):
     def __init__(self, data_dir: str = "data/processed", transform=None):
         self.data_dir = Path(data_dir)
         self.x_dir = self.data_dir / "input_x" 
         self.y_dir = self.data_dir / "target_y"
+        
         # 1. Stampa il percorso reale in cui Python sta curiosando
         print(f"DEBUG - Percorso assoluto: {self.x_dir.resolve()}")
         self.filenames = sorted([f.name for f in self.x_dir.glob("*.png")])
+        
         # 2. Conferma quanti file vengono effettivamente visti
         print(f"DEBUG - File estratti: {len(self.filenames)}")
+        
         self.transform = transform or self.get_default_transforms()
+        # Scalato tra [-1, 1] per la Tanh del Generatore
+        self.normalize = v2.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 
     def get_default_transforms(self):
-        # Data Augmentation stocastica applicata sincronizzata (Y.2.4)
-        return A.Compose([
-            A.HorizontalFlip(p=0.5),
-            A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.05, rotate_limit=10, p=0.5, border_mode=cv2.BORDER_CONSTANT, fill=0),
-            A.ElasticTransform(alpha=1, sigma=50, alpha_affine=50, p=0.3, border_mode=cv2.BORDER_CONSTANT, value=0),
-            A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)), # Scalato tra [-1, 1] per modelli generativi
-            ToTensorV2()
-        ], additional_targets={'target': 'image'})
+        # Data Augmentation stocastica applicata sincronizzata (Y.2.4) - Nativa PyTorch
+        return v2.Compose([
+            v2.RandomHorizontalFlip(p=0.5),
+            v2.RandomApply([
+                v2.RandomAffine(degrees=[-10, 10], translate=[0.05, 0.05], scale=[0.95, 1.05], fill=0)
+            ], p=0.5),
+            v2.RandomApply([
+                v2.ElasticTransform(alpha=50.0, sigma=5.0, fill=0)
+            ], p=0.3),
+        ])
 
     def __len__(self):
         return len(self.filenames)
@@ -42,11 +48,16 @@ class OsteoDataset(Dataset):
         image_y = cv2.imread(y_path)
         image_y = cv2.cvtColor(image_y, cv2.COLOR_BGR2RGB)
         
-        # Applicazione sincronizzata della trasfomazione su X e Y
-        augmented = self.transform(image=image_x, target=image_y)
+        # Le transforms V2 richiedono tensori float [Canali, Altezza, Larghezza] nel range [0.0, 1.0]
+        tensor_x = torch.from_numpy(image_x).permute(2, 0, 1).float() / 255.0
+        tensor_y = torch.from_numpy(image_y).permute(2, 0, 1).float() / 255.0
         
-        tensor_x = augmented['image']
-        tensor_y = augmented['target']
+        # Applicazione sincronizzata della trasfomazione su X e Y contemporaneamente
+        tensor_x, tensor_y = self.transform(tensor_x, tensor_y)
+        
+        # Normalizzazione finale
+        tensor_x = self.normalize(tensor_x)
+        tensor_y = self.normalize(tensor_y)
         
         return tensor_x, tensor_y
 

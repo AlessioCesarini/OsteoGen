@@ -4,10 +4,13 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
-from src.dataset import OsteoDataset  # Importo il file dataset.py
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
+# Import del tuo modulo personalizzato
+from src.dataset import OsteoDataset 
+
+# Previene crash di librerie dinamiche (OpenMP) su ambiente Windows
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 # ==========================================
 # Y.3.1 Setup Architetturale: Baseline U-Net
@@ -171,10 +174,10 @@ class PatchGANDiscriminator(nn.Module):
 # ==========================================
 def train_model():
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    os.makedirs("training_dir_OsteoGen_GAN", exist_ok=True)
+    os.makedirs("PatchGan_results", exist_ok=True)
 
     print("Caricamento dataset in corso...")
-    dataset = OsteoDataset(data_dir="OsteoGen/data/processed")
+    dataset = OsteoDataset(data_dir="data/processed")
     dataloader = DataLoader(dataset, batch_size=8, shuffle=True)
     print(f"Dataset caricato: {len(dataset)} coppie trovate.")
 
@@ -259,23 +262,36 @@ def train_model():
             # ==========================================
             # CALCOLO MEDIE EPOCHE E EARLY STOPPING
             # ==========================================
+           # ==========================================
+            # CALCOLO MEDIE EPOCHE E EARLY STOPPING
+            # ==========================================
             num_batches = len(dataloader)
             avg_G_L1 = epoch_loss_G_L1 / num_batches
+            avg_G_GAN = epoch_loss_G_GAN / num_batches
+            avg_D = epoch_loss_D / num_batches
 
-            storico_loss_G_GAN.append(epoch_loss_G_GAN / num_batches)
+            storico_loss_G_GAN.append(avg_G_GAN)
             storico_loss_G_L1.append(avg_G_L1)
-            storico_loss_D.append(epoch_loss_D / num_batches)
+            storico_loss_D.append(avg_D)
 
-            if avg_G_L1 < best_L1_loss: # A differenza dei modelli standard, ignoriamo la Loss GAN per l'Early Stopping (poiché oscilla per natura). Salviamo i pesi (torch.save) solo quando la Loss L1 tocca un nuovo minimo storico, garantendo di catturare il modello spazialmente e cromaticamente più accurato.
+            # STAMPA IL RIASSUNTO DELL'EPOCA
+            print(f"-> Fine Epoca {epoch+1} | Media Loss D: {avg_D:.4f} | Media Loss G (GAN): {avg_G_GAN:.4f} | Media L1 (Ricostruzione): {avg_G_L1:.4f}")
+
+            # LOGICA DI SALVATAGGIO CON AVVISO
+            if avg_G_L1 < best_L1_loss:
                 best_L1_loss = avg_G_L1
                 best_epoch = epoch + 1
                 epochs_no_improve = 0
-                torch.save(generator.state_dict(), "training_dir_OsteoGen_GAN/best_generator.pth")
-                torch.save(discriminator.state_dict(), "training_dir_OsteoGen_GAN/best_discriminator.pth")
+                
+                print(f"⭐ MIGLIORAMENTO! La Loss L1 è scesa a {best_L1_loss:.4f}. Salvataggio pesi sulla RTX 5080...")
+                
+                torch.save(generator.state_dict(), "PatchGan_results/best_generator.pth")
+                torch.save(discriminator.state_dict(), "PatchGan_results/best_discriminator.pth")
             else:
                 epochs_no_improve += 1
+                print(f"   (Nessun miglioramento della L1 da {epochs_no_improve} epoche)")
 
-            if (epoch + 1) % 1 == 0:
+            if (epoch + 1) % 20 == 0:
                 generator.eval()
                 with torch.no_grad(): # Generazione Test Visivi
                     for test_ossa, test_animali in dataloader:
@@ -285,7 +301,7 @@ def train_model():
                         vis_pred = (pred_animali[:4] * 0.5) + 0.5
                         vis_veri = (test_animali[:4].to(device) * 0.5) + 0.5
                         comparison = torch.cat([vis_ossa, vis_pred, vis_veri], dim=0)
-                        save_image(comparison, f"training_dir_OsteoGen_GAN/epoca_{epoch+1}.png", nrow=4)
+                        save_image(comparison, f"PatchGan_results/epoca_{epoch+1}.png", nrow=4)
                         break 
 
             if epochs_no_improve >= patience:
@@ -296,8 +312,8 @@ def train_model():
         # Questo blocco scatta appena premi Ctrl+C
         print("\n\n[!] ATTENZIONE: Addestramento interrotto manualmente (Ctrl+C).")
         print(f"Salvataggio del modello corrente all'epoca {epoch+1} in corso...")
-        torch.save(generator.state_dict(), f"training_dir_OsteoGen_GAN/generator_interrotto_ep{epoch+1}.pth")
-        torch.save(discriminator.state_dict(), f"training_dir_OsteoGen_GAN/discriminator_interrotto_ep{epoch+1}.pth")
+        torch.save(generator.state_dict(), f"PatchGan_results/generator_interrotto_ep{epoch+1}.pth")
+        torch.save(discriminator.state_dict(), f"PatchGan_results/discriminator_interrotto_ep{epoch+1}.pth")
         
     finally:
         # Questo blocco viene eseguito SEMPRE, sia alla fine naturale, sia post-interruzione
@@ -326,7 +342,7 @@ def train_model():
         plt.grid(True, alpha=0.3)
 
         plt.tight_layout()
-        plt.savefig("training_dir_OsteoGen_GAN/grafico_loss_complessivo.png")
+        plt.savefig("PatchGan_results/grafico_loss_complessivo.png")
         print("Grafici salvati. Training terminato in sicurezza.")
 
 if __name__ == "__main__":
